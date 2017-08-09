@@ -1,0 +1,38 @@
+<h2>BigCommerce API developer information</h2>
+<p>This module is a wrapper for the BigCommerce API and allows you to make calls to your store and display the results on your ProcessWire site</p>
+<p>Learn more about BigCommerce at <a href="https://www.bigcommerce.com/" target="_blank">www.bigcommerce.com</a> and the BigCommerce API at <a href="https://developer.bigcommerce.com/api" target="_blank">https://developer.bigcommerce.com/api</a>.</p>
+<h3>Prerequisites</h3>
+<ul>
+    <li>You must have a BigCommerce store already set up.</li>
+    <li>You must know your API login credentials. These can be:
+        <ul>
+            <li><strong>BasicAuth</strong>
+                <ul>
+                    <li><strong>store name</strong>: This MUST be the original store name issued by BigCommerce, without an ending backslash, eg:<br />
+                        https://store-xxxxxx.mybigcommerce.com<br />
+                        where xxxxx is the unique store id issued by BigCommerce.</li>
+                    <li><strong>username</strong>: This is the username you create in BigCommerce for the Legacy API. To create the username go to <em>Set Up & Tools &raquo;Legacy API accounts</em> in the BigCommerce store admin.</li>
+                    <li><strong>api_key</strong>: After creating the Legacy API user, copy&amp;paste the API token in to the ProcessWire module BigCommerceAPI API key field.</li>
+                    <li>Save your BigCommerceAPI module settings.</li>
+                </ul>
+            </li>
+        </ul>
+        <ul>
+            <li><strong>OAuth</strong>
+                <ul>
+                    <li><strong>client_id</strong></li>
+                    <li><strong>auth_token</strong>
+                    <li><strong>store_hash</strong></li>
+                </ul>
+            </li>
+        </ul>
+        <strong>Note</strong>: Enter info into only one of the two login fieldsets. The module will default to the BasicAuth method.<br />    
+    </li>
+</ul>
+
+<h3>Usage</h3>
+<p>Firstly, in your template instantiate the module as it is not autoloaded,  eg:<br /><br />
+<code>$bc = $modules->get('BigCommerceAPI');</code>.<br /><br /><p>
+<p>Then in your PW template, you can call any BigCommerce API function within the Bigcommerce\Api\Client namespace with, eg<br /><br /><code>$product = $bc->api('getProduct', 124);</code><br /><br />where the first parameter is the BigCommerce API function name and subsequent parameters are the function arguments.</p>
+
+<p>Have fun with it. </p>

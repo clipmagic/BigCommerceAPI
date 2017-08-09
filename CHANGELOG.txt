@@ -1,0 +1,6 @@
+ProcessWire BigCommerceAPI Changelog
+
+Update #1 - 2015/10/15
+=======================
+	
+- First release of BigCommerceAPI

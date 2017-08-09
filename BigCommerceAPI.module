@@ -1,0 +1,281 @@
+<?php
+/**
+ * BigCommerceAPI
+ *
+ * Copyright:
+ *
+ * Clip Magic - Prue Rowland
+ * Web: www.clipmagic.com.au
+ * Email: admin@clipmagic.com.au
+ *
+ * ProcessWire 2.x
+ * Copyright (C) 2014 by Ryan Cramer
+ * Licensed under GNU/GPL v2, see LICENSE.TXT
+ *
+ * http://processwire.com
+ *
+ */
+
+
+use Bigcommerce\Api\Client as Bigcommerce;
+use Bigcommerce\Api\Resources;
+
+
+class BigCommerceAPI extends WireData implements Module, ConfigurableModule {
+
+    public function __construct() {
+
+        // set our default values before ProcessWire configures the module
+        // Legacy v2 API BasicAuth
+        $this->store_url = '';
+        $this->username = '';
+        $this->api_key = '';
+        
+        //OAuth
+        $this->client_id = '';
+        $this->auth_token = '';
+        $this->store_hash = '';
+        
+        // Optional configs
+        $this->verifyPeer = true;
+        $this->proxy_url = '';
+        $this->proxy_port = 81;
+        
+        
+
+    }
+
+    #---------------------
+    # Module init
+    #---------------------
+
+    public function init() {
+        
+        $errors = array();
+        $directory = dirname(__FILE__) . '/Bigcommerce/Api/';
+        $bcResources = $directory . 'Resources/';
+        
+        
+         include($directory . 'Error.php');
+         include($directory . 'ClientError.php');
+         include($directory . 'NetworkError.php');
+         include($directory . 'ServerError.php');
+         include($directory . 'Filter.php');
+         include($directory . 'Connection.php');
+         include($directory . 'Client.php');
+         include($directory . 'Resource.php');
+         
+        
+        foreach (glob("{$bcResources}*.php") as $phpfile)
+        {
+            include( $phpfile);
+        }
+
+        // BC classes
+        $this->error         = new \Bigcommerce\Api\Error();
+        $this->client_error  = new \Bigcommerce\Api\ClientError();
+        $this->network_error = new \Bigcommerce\Api\NetworkError();
+        $this->server_error  = new \Bigcommerce\Api\ServerError();
+        $this->filter        = new \Bigcommerce\Api\Filter();
+        $this->connection    = new \Bigcommerce\Api\Connection();
+        $this->client        = new \Bigcommerce\Api\Client();
+        $this->resource      = new \Bigcommerce\Api\Resource();
+
+
+
+        Bigcommerce::failOnError();
+        
+        
+        try {
+            if (!empty($this->store_url) && !empty($this->username) && !empty($this->api_key)) {
+                Bigcommerce::configure(array(
+                    'store_url' => $this->store_url, 
+                    'username' => $this->username, 
+                    'api_key' => $this->api_key
+                    )
+                );
+            } else {
+                Bigcommerce::configure(array(
+                    'client_id' => $this->client_id,
+                    'auth_token' => $this->auth_token,
+                    'store_hash' => $this->store_hash
+                ));    
+            }       
+            
+            if ($this->verifyPeer == false) {
+                Bigcommerce::verifyPeer(false);
+            }
+            
+            if (isset($this->proxy_url) && isset($this->proxy_port)) {
+                Bigcommerce::useProxy($this->proxy_url, $this->proxy_port);
+            }
+
+        } catch (Bigcommerce\Api\Error $error) {
+            echo  $error->getCode();
+            echo $error->getMessage();
+        }
+        
+        
+        
+    }
+
+
+    public function ready() {
+
+    }
+
+    #---------------------
+    # Interface methods
+    #---------------------
+
+    static public function getModuleInfo() {
+        return array(
+            'title' => 'BigCommerce PHP API', 
+            'author' => 'Clip magic', 
+            'version' => '0.0.1', 
+            'summary' => 'ProcessWire module wrapper for BigCommerce API', 
+            'singular' => true, 
+            'autoload' => false
+            );
+    }
+
+      public static function getModuleConfigInputfields(array $data) {
+          
+
+        $fields = new InputfieldWrapper();
+          
+        
+        // BasicAuth fieldset
+        $fieldset = wire('modules')->get('InputfieldFieldset'); 
+        $fieldset->label = 'BasicAuth Login';
+
+            // ask for the store url
+            $field = wire('modules')->get('InputfieldText');
+            $field -> name = 'store_url';
+            $field -> label = "Enter the URL of your BigCommerce store";
+            if (isset($data['store_url']))
+                $field -> value = $data['store_url'];
+            $fieldset -> add($field);
+    
+            // ask for the username
+            $field = wire('modules')->get('InputfieldText');
+            $field -> name = 'username';
+            $field -> label = "Enter the username of the BigCommerce user";
+            if (isset($data['username']))
+                $field -> value = $data['username'];
+            $fieldset -> add($field);
+    
+            // ask for the bigcommerce api key
+            $field = wire('modules')->get('InputfieldText');
+            $field -> name = 'api_key';
+            $field -> label = "Enter the api key associated with the BigCommerce user";
+            if (isset($data['api_key']))
+                $field -> value = $data['api_key'];
+        
+        $fieldset->add($field);
+        $fields -> add($fieldset);
+
+
+        // OAuth fieldset
+        $fieldset = wire('modules')->get('InputfieldFieldset'); 
+        $fieldset->label = 'OAuth Login';
+
+            // ask for the client_id
+            $field = wire('modules')->get('InputfieldText');
+            $field -> name = 'client_id';
+            $field -> label = "Enter your Client Id";
+            if (isset($data['client_id']))
+                $field -> value = $data['client_id'];
+            $fieldset -> add($field);
+    
+            // ask for the auth_token
+            $field = wire('modules')->get('InputfieldText');
+            $field -> name = 'auth_token';
+            $field -> label = "Enter your authorisation token";
+            if (isset($data['auth_token']))
+                $field -> value = $data['auth_token'];
+            $fieldset -> add($field);
+    
+            // ask for the store_hash
+            $field = wire('modules')->get('InputfieldText');
+            $field -> name = 'store_hash';
+            $field -> label = "Enter your store hash";
+            if (isset($data['store_hash']))
+                $field -> value = $data['store_hash'];
+        
+        $fieldset->add($field);
+        $fields -> add($fieldset);
+        
+        // Options fieldset
+        $fieldset = wire('modules')->get('InputfieldFieldset'); 
+        $fieldset->label = 'Configuration options';
+
+            // Does the peer need to be verified
+            $field = wire('modules')->get('InputfieldCheckbox');
+            $field -> name = 'verifyPeer';
+            $field -> label = "Verify peer";
+            if (isset($data['verifyPeer']))
+                $field -> value = $data['verifyPeer'];
+            $fieldset -> add($field);
+    
+            // ask for the proxy url
+            $field = wire('modules')->get('InputfieldText');
+            $field -> name = 'proxy_url';
+            $field -> label = "Enter the url of your proxy";
+            if (isset($data['proxy_url']))
+                $field -> value = $data['proxy_url'];
+            $fieldset -> add($field);
+    
+            // ask for the proxy port number
+            $field = wire('modules')->get('InputfieldText');
+            $field -> name = 'proxy_port';
+            $field -> label = "Enter port number of the proxy";
+            if (isset($data['proxy_port']))
+                $field -> value = $data['proxy_port'];
+        
+        $fieldset->add($field);
+        $fields->add($fieldset);
+        
+        
+        $fieldset = wire('modules')->get('InputfieldFieldset'); 
+        $fieldset->label = 'Additional Information';
+        $field              = wire('modules')->get('InputfieldMarkup');
+        $field->columnWidth = 100;
+        $field->markupText  = file_get_contents(wire('config')->paths->modules. 'BigCommerceAPI'.DIRECTORY_SEPARATOR.'doc'.DIRECTORY_SEPARATOR.'bc-api-help.html');
+        $fields->add($field);
+
+        return $fields;
+    }
+
+    
+    /***************************************************************************
+     * Calls to the API
+     ***************************************************************************/
+    
+    public static function api($function_name, $args = null) {
+
+/*      $errors = array();
+        
+        Bigcommerce::failOnError();
+        try {
+            $out = call_user_func('Bigcommerce\\Api\\Client::'. $function_name,$args);
+        } catch (Bigcommerce\Api\Error $error) {
+            $errors[] = $error->getCode();
+            $errors[] = $error->getMessage();
+            return $errors;
+        }
+        return $out;
+*/
+        if (!empty($args) && is_array($args))
+            $args = implode(",", $args);
+        
+        $out = call_user_func('Bigcommerce\\Api\\Client::'. $function_name,$args);      
+        if (empty($out)) {
+            $error = Bigcommerce::getLastError();
+            $out->error->status = $error[0]->status;
+            $out->error->message = $error[0]->message;
+        }   
+        return $out;    
+    }
+ 
+}

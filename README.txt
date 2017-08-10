@@ -39,7 +39,7 @@ BigCommerceAPI does not autoload so you need to instantiate it in your template:
 You may execute any BigCommerce API commands from the Bigcommerce/Api/Client
 namespace, eg: 
 
-	$product = $bc->api('getProduct',124);	
+	$product = $bc->api('getProduct',125);
   
 where the first parameter is the BigCommerce API function name and subsequent
 parameters are the function name arguments.

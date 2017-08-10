@@ -4,15 +4,6 @@ ProcessWire BigCommerceAPI
 Copyright 2015 by Clip Magic, ABN: 49279932735
 
 
-PLEASE DO NOT DISTRIBUTE
-========================
-
-This service/software is authorized for use only for the site it was 
-purchased for. It should not be distributed beyond the site you 
-registered it for, except for staging and/or development servers 
-related to the site. 
-
-
 ABOUT BIGCOMMERCEAPI
 ====================
 
@@ -54,19 +45,9 @@ where the first parameter is the BigCommerce API function name and subsequent
 parameters are the function name arguments.
 
 
-HAVE QUESTIONS OR NEED HELP?
-============================
-
-Send an email to admin@clipmagic.com.au. You may also post in the ProcessWire 
-forums at http://processwire.com/talk/. 
-
 
 TERMS AND CONDITIONS
 ====================
-
-You may not copy or distribute BigCommerceAPI, except on site(s) you have registered it 
-for with Clip Magic. It is okay to make copies for use on staging 
-or development servers specific to the site you registered for. 
 
 In no event shall Clip Magic or ProcessWire be liable for any special, 
 indirect, consequential, exemplary, or incidental damages whatsoever, including, 

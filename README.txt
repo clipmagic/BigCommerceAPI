@@ -17,7 +17,7 @@ REQUIREMENTS
 
   * ProcessWire 2.6 or newer 
   * Apache web server or 100% compatible
-  * PHP 5.3.28 or above
+  * PHP 5.6 or above
 
 
 HOW TO INSTALL

@@ -1,0 +1,18 @@
+{
+    "name": "clipmagic/big-commerce-api",
+    "description": "ProcessWire module to connect to BigCommerce store(s)",
+    "type": "pw-module",
+    "keywords": [ "processwire", "module" ],
+    "homepage": "https://modules.processwire.com",
+    "require": {
+        "moderntribe/bigcommerce-api-php-v3": "^2.3"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Prue Rowland",
+            "email": "admin@clipmagic.com.au",
+            "homepage": "https://clipmagic.com.au"
+        }
+    ]
+}
